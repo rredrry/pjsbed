@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Processing.JS Test Bed</title>
+		<style>
+button
+{
+background: rgb(250,250,255);
+font-family: consolas;
+}
+
+select
+{
+background: rgb(250,250,255);
+font-family: verdana;
+}
+
+textarea
+{
+font-family: arial;
+}
+
+p,a
+{
+font-family: verdana;
+}
+
+A:link {color: blue; text-decoration:none}
+A:visited {color: blue; text-decoration:none}
+A:hover {text-decoration:underline; opacity: 0.7; }
+</style>
+	</head>
+	<body style='background:white'>
+	<p><text style="font-size:48px; font-family:verdana"><em style='font-size:60px;color:blue;font-family:courier new;font-weight:500'>Processing.JS</em> Test Bed</text><br><text style="font-size:20px">...is a <strong>free, open source, </strong> and<strong> compact</strong> program that can be used to run various types of Processing.JS, made using a mix of JS and html.</text>
+	<div id='uhoh'>
+	<p style='background:rgb(255,200,200)'>Please enable pop-ups and JavaScript. If you can see this message, then <strong>JavaScript is currently BLOCKED.</strong></p></div>
+ <!-- The body of the webpage, where all visible stuff lies. -->
+ </p> <br>Style:&nbsp;<select id='style'>
+ <option selected>Default
+ <option>Stark
+ <option>Night
+ <option>Glow
+ <option>Custom
+ </select>&nbsp;&nbsp;&nbsp;<button onclick='updateStyle();'>Update Style</button>  
+ <br>Mode:&nbsp;<select id='mode'>
+ <option>Processing.JS
+ <option>Pure Processing
+ <option>Khan Academy
+ <option>HTML5
+ </select>&nbsp;<button onclick='updateCode();'>Run Code</button><script src='open.js'></script><a href='javascript:modeHelp();'>?</a>
+<br><a href='javascript:modeReplace();'>Replace textarea with example code for the selected mode</a><br><a href='javascript:cp();' id='acp'>Open Color Picker</a>
+</p>
+<script src="processing-1.4.1.min.js"></script>
+	<textarea onmouseenter='this.style.background=over;' onmouseleave='this.style.background=out;' rows='25' cols='90' style='font-family:consolas' id="processingcode" rows="20" cols="60">var sketchProc=function(processingInstance){ with (processingInstance){
+size(400, 400); 
+frameRate(30);
+background(0);
+draw=function(){
+ellipse(mouseX,mouseY,30,30);
+}
+}};
+</textarea>
+<span id='cp'></span>
+<span id='bitwin'></span>
+<p style="font-size:18">More on Processing and Processing.JS</p><ul>
+	<li><a href="javascript:window.open('http://processingjs.org/');">the Processing.JS site</a></li>
+	<li><a href="javascript:window.open('http://processing.org/');">the Processing site</a></li>
+	<li><a href="javascript:window.open('http://www.khanacademy.org/cs/new');">the Khan Academy PJS environment</a></li>
+	<li><a href="javascript:window.open('http://petercollingridge.appspot.com/pixelator');">Peter Collingridge's pixelator</a></li>
+	</ul><br>
+	<form id='run'>
+</form> 
+<script id='pr' src="processing-1.4.1.min.js"></script>
+<script>
+document.getElementById('uhoh').innerHTML='';
+over='rgb(240,240,240)';
+out='rgb(255,255,255)';
+function updateStyle(){
+var s = document.getElementById('style').value.toLowerCase();
+if(s==='default'){
+over='rgb(240,240,240)';
+out='white';
+txt='black';
+}
+if(s==='night'){
+over='rgb(0,0,10)';
+out='rgb(0,0,0);'
+txt='white';
+}
+if(s==='glow'){
+over='rgb(10,10,10)';
+out='rgb(0,0,0);'
+txt='rgb(215,209,0)';
+}
+if(s==='stark'){
+over='rgb(240,240,240)';
+out='white';
+txt='rgb(70,0,70)';
+}
+if(s==='custom'){
+txt=prompt("Text color:");
+out=prompt("Background color:");
+over=prompt("Background color on hover:");
+if(confirm('Save Style?')){
+document.getElementById('style').innerHTML=' <option>Default<option>Stark<option>Night<option>Glow<option>Custom<option selected>Saved Custom';
+saved=[txt,out,over];
+}
+}
+if(s==='saved custom'){
+txt=saved[0];
+out=saved[1];
+over=saved[2];
+}
+document.getElementById('processingcode').style.background=out;
+document.getElementById('processingcode').style.color=txt;
+}
+function modeHelp(){
+	hWin = window.open('','hWin','location=no, menubar=no, toolbar=no, scrollbars=yes resizable=yes');
+	hWin.document.open();
+	hWin.document.write('<html><head><title>Modes Help</title></head>\
+	<body style="font-family:consolas"><h1>Modes Help</h1>\
+	<p style="font-size:18">Processing.JS</p><p>Runs Javascript-only PJS code, the type that is by default in the text area (JavaScript-like syntax)</p><br>\
+	<p style="font-size:18">Pure Processing</p><p>allows you to write pure Processing code (java-like syntax)<br>\
+	Everything you do here should act the same way it does in the Processing2.0+ IDE</p><br><p style="font-size:18">Khan Academy</p><p>\
+	Khan Academy mode is based off of Processing.JS mode and adds the variables mouseIsPressed and keyIsPressed and removes the need for sketchProc() from the code, and also defaults a bunch of stuff like size() and frameRate() and background().\
+	It pretty much allows you to take code from the KA Environment and paste it here. (images from KA are not compatible)</p><br>\
+	<p style="font-size:18">HTML</p><p>allows you to write html5 code. This is the only language currently available that is not related to Processing, but you can embed Processing using <text style="background:lightgrey">&#60;script src="processing-1.4.1.min.js"></text>.\
+	Having access to the entire HTML page could be useful for Processing programmers if they want to have Processing interact with the document.<br>\
+	<p style="font-size:18">Examples</p><p>by clicking "Replace textarea with example code for the selected mode", it will replace the code you have with basic code, following the syntax of that mode. All example scripts do the same thing, regardless of mode, so it helps to show the syntax differences.\
+	</body></html>');
+	hWin.document.close();
+};
+function modeReplace(){
+if(confirm('Are you sure? This will replace your current code.')){
+if(document.getElementById('mode').value==='Khan Academy'){
+document.getElementById('processingcode').value='background(0)\n\
+draw=function(){\n\
+ellipse(mouseX,mouseY,30,30);\n\
+};';
+}else if(document.getElementById('mode').value==='Processing.JS'){
+document.getElementById('processingcode').value='var sketchProc=function(processingInstance){ with (processingInstance){\n\
+size(400, 400); \n\
+frameRate(30);\n\
+background(0);\n\
+draw=function(){\n\
+ellipse(mouseX,mouseY,30,30);\n\
+}\n\
+}};';
+}else if(document.getElementById('mode').value==='Pure Processing'){
+document.getElementById('processingcode').value='void setup(){\n\
+size(400, 400); \n\
+frameRate(30);\n\
+background(0);\n\
+};\n\
+void draw(){\n\
+ellipse(mouseX,mouseY,30,30);\n\
+};';
+}else if(document.getElementById('mode').value==='HTML5'){
+document.getElementById('processingcode').value='<!DOCTYPE html>\n\
+<html>\n\
+<head>\n\
+\t<title>Scratchpad</title>\n\
+\t\x3Cscript src="processing-1.4.1.min.js">\x3C/script>\n\
+</head>\n\
+<body style="background: rgb(0,0,40); text-align: center">\n\
+\t\x3Cscript src="processing-1.4.1.min.js">\x3C/script>\n\
+\t\x3Cscript type="text/processing" data-processing-target="processing-canvas">\n\
+\t\tvoid setup(){\n\
+\t\tsize(400, 400);\n\
+\t\tframeRate(30);\n\
+\t\tbackground(0);\n\
+\t\t};\n\
+\t\tvoid draw(){\n\
+\t\tellipse(mouseX,mouseY,30,30);\n\
+\t\t};\n\
+\t\x3C/script>\n\
+\t<canvas id="processing-canvas"></canvas>\n\
+</body>\n\
+</html>';
+}
+}
+};
+function cp(){
+document.getElementById('cp').innerHTML='<br><iframe seamless=true height=600 width=600 src="color picker/bin/color picker.html">';
+document.getElementById('acp').innerHTML='Close Color Picker';
+document.getElementById('acp').href='javascript:ucp();'
+}
+function ucp(){
+document.getElementById('cp').innerHTML='';
+document.getElementById('acp').innerHTML='Open Color Picker';
+document.getElementById('acp').href='javascript:cp();'
+}
+function ubit(){
+document.getElementById('bitwin').innerHTML='';
+document.getElementById('bit').innerHTML='Open Bitmap Editor';
+document.getElementById('bit').href='javascript:bit();'
+}
+</script>
+	</body>
+</html>
